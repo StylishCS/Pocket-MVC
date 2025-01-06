@@ -9,14 +9,16 @@
       href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,300;0,400;0,500;0,600;0,700;1,100&display=swap"
       rel="stylesheet"
     />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+      rel="stylesheet"
+    />
     <link rel="stylesheet" href="css/style.css" />
     <link rel="stylesheet" href="css/signIn.css" />
 
     <title>Home</title>
   </head>
   <body>
-    
     <!-- Slider -->
     <div class="slider">
       <div class="slides">
@@ -86,11 +88,21 @@
             <h2 class="validation-message" id="signupEmailError"></h2>
 
             <label for="signupPassword">Password:</label>
-            <input type="password" name="password" id="signupPassword" required />
+            <input
+              type="password"
+              name="password"
+              id="signupPassword"
+              required
+            />
             <h2 class="validation-message" id="signupPasswordError"></h2>
 
             <label for="signupConfirmPassword">Confirm Password:</label>
-            <input type="password" name="confirmPassword" id="signupConfirmPassword" required />
+            <input
+              type="password"
+              name="confirmPassword"
+              id="signupConfirmPassword"
+              required
+            />
             <h2 class="validation-message" id="signupConfirmPasswordError"></h2>
 
             <button type="button" class="submit-button" onclick="signup()">
@@ -104,6 +116,124 @@
         </div>
       </div>
     </div>
+    <!-- Wishlist Aside -->
+    <aside id="wishlist" class="aside">
+      <div class="head-container">
+        <h2>Wishlist</h2>
+        <button class="close-btn" id="close-wishlist">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="products-aside-container">
+        <div class="product-aside">
+          <button class="delete">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <img src="/products/m1.jpg" />
+          <div class="product-aside-details">
+            <h3>Product one</h3>
+            <span>30.00$</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Cart Aside -->
+    <aside id="cart" class="aside">
+      <div class="head-container">
+        <h2>Cart</h2>
+        <button class="close-btn" id="close-cart">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <div class="products-aside-container">
+        <div class="product-aside">
+          <button class="delete">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <img src="/products/m1.jpg" />
+          <div class="product-aside-details">
+            <h3>Product one</h3>
+            <span>30.00$</span>
+            <div class="count">
+              <button class="decrease">-</button>
+              <p class="num">1</p>
+              <button class="increase">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-aside">
+          <button class="delete">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <img src="/products/m1.jpg" />
+          <div class="product-aside-details">
+            <h3>Product one</h3>
+            <span>30.00$</span>
+            <div class="count">
+              <button class="decrease">-</button>
+              <p class="num">1</p>
+              <button class="increase">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-aside">
+          <button class="delete">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <img src="/products/m1.jpg" />
+          <div class="product-aside-details">
+            <h3>Product one</h3>
+            <span>30.00$</span>
+            <div class="count">
+              <button class="decrease">-</button>
+              <p class="num">1</p>
+              <button class="increase">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-aside">
+          <button class="delete">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <img src="/products/m1.jpg" />
+          <div class="product-aside-details">
+            <h3>Product one</h3>
+            <span>30.00$</span>
+            <div class="count">
+              <button class="decrease">-</button>
+              <p class="num">1</p>
+              <button class="increase">+</button>
+            </div>
+          </div>
+        </div>
+        <div class="product-aside">
+          <button class="delete">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+          <img src="/products/m1.jpg" />
+          <div class="product-aside-details">
+            <h3>Product one</h3>
+            <span>30.00$</span>
+            <div class="count">
+              <button class="decrease">-</button>
+              <p class="num">1</p>
+              <button class="increase">+</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h2 class="total">Total Amount : <span>150.00$</span></h2>
+      <div class="checkout">
+        <a href="/checkout"><button>Proceed to checkout</button></a>
+      </div>
+    </aside>
+
+    <!-- Overlay -->
+    <div id="overlay" class="overlay"></div>
+
     <div class="products-parent">
       <div class="title-parent">
         <h2>Our Products</h2>
@@ -112,21 +242,32 @@
       <!-- Product -->
       <div class="product-parent">
         <% products.forEach(product => {%>
-          <div class="product">
-            <div class="bar"></div>
-            <div class="image-parent">
-              <img src="<%= product.image %>" alt="product" />
-            </div>
-            <p class="title"><%= product.name %></p>
-            <div class="stars-container">
-              <% for(let i = 0; i < 5; i++) { %>
-                <i class="fa-solid fa-star" style="color: <%= i < product.rating ? '#ffd700' : '#ddd' %>"></i>
-              <% } %>
-            </div>
-            <div class="price-container">
-              <span>$<%= product.price %></span>
-            </div>
+        <div class="product">
+          <div class="bar"></div>
+          <div class="image-parent">
+            <img src="<%= product.image %>" alt="product" />
           </div>
+          <p class="title"><%= product.name %></p>
+          <div class="stars-container">
+            <% for(let i = 0; i < 5; i++) { %>
+            <i
+              class="fa-solid fa-star"
+              style="color: <%= i < product.rating ? '#ffd700' : '#ddd' %>"
+            ></i>
+            <% } %>
+          </div>
+          <div class="add-container">
+            <button class="add-wishlist">
+              <i class="fa-solid fa-heart"></i><span>Add to wishlist</span>
+            </button>
+            <button class="add-cart">
+              <i class="fa-solid fa-cart-shopping"></i> <span>Add to cart</span>
+            </button>
+          </div>
+          <div class="price-container">
+            <span>$<%= product.price %></span>
+          </div>
+        </div>
         <%})%>
       </div>
       <!-- Product -->
@@ -146,21 +287,32 @@
       <!-- Product -->
       <div class="product-parent">
         <% newCollection.forEach(product => {%>
-          <div class="product">
-            <div class="bar"></div>
-            <div class="image-parent">
-              <img src="<%= product.image %>" alt="product" />
-            </div>
-            <p class="title"><%= product.name %></p>
-            <div class="stars-container">
-                <% for(let i = 0; i < 5; i++) { %>
-                    <i class="fa-solid fa-star" style="color: <%= i < product.rating ? '#ffd700' : '#ddd' %>"></i>
-                  <% } %>
-            </div>
-            <div class="price-container">
-              <span>$<%= product.price %></span>
-            </div>
+        <div class="product">
+          <div class="bar"></div>
+          <div class="image-parent">
+            <img src="<%= product.image %>" alt="product" />
           </div>
+          <p class="title"><%= product.name %></p>
+          <div class="stars-container">
+            <% for(let i = 0; i < 5; i++) { %>
+            <i
+              class="fa-solid fa-star"
+              style="color: <%= i < product.rating ? '#ffd700' : '#ddd' %>"
+            ></i>
+            <% } %>
+          </div>
+          <div class="add-container">
+            <button class="add-wishlist">
+              <i class="fa-solid fa-heart"></i><span>Add to wishlist</span>
+            </button>
+            <button class="add-cart">
+              <i class="fa-solid fa-cart-shopping"></i> <span>Add to cart</span>
+            </button>
+          </div>
+          <div class="price-container">
+            <span>$<%= product.price %></span>
+          </div>
+        </div>
         <%})%>
       </div>
       <!-- Product -->
@@ -171,7 +323,7 @@
       </div>
     </div>
     <!-- new collection -->
-    
+
     <script src="js/script.js"></script>
     <script src="js/formvalidation.js"></script>
   </body>
