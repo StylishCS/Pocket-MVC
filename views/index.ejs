@@ -126,16 +126,21 @@
       </div>
 
       <div class="products-aside-container">
-        <div class="product-aside">
-          <button class="delete">
+        <% if (wishlist && wishlist.length > 0) { %>
+        <% wishlist.forEach(product => { %>
+        <div id="<%= product._id %>" class="product-aside">
+          <button class="delete" onclick="removeFromWishlist('<%= product._id %>')">
             <i class="fa-solid fa-xmark"></i>
           </button>
-          <img src="/products/m1.jpg" />
+          <img src="<%= product.image %>" alt="<%= product.name %>" />
           <div class="product-aside-details">
-            <h3>Product one</h3>
-            <span>30.00$</span>
+            <h3><%= product.name %></h3>
+            <span><%= product.price %>$</span>
           </div>
         </div>
+        <% }) %> <% } else { %>
+        <p>Your wishlist is empty.</p>
+        <% } %>
       </div>
     </aside>
 
@@ -149,86 +154,34 @@
       </div>
 
       <div class="products-aside-container">
-        <div class="product-aside">
-          <button class="delete">
+        <% if (cart && cart.products.length > 0) { %> <%
+        cart.products.forEach(product => { %>
+        <div id="<%= product._id %>" class="product-aside">
+          <button
+            class="delete"
+            onclick="removeFromCart('<%= product._id %>', '<%= product.price %>')"
+          >
             <i class="fa-solid fa-xmark"></i>
           </button>
-          <img src="/products/m1.jpg" />
+          <img src="<%= product.image %>" alt="<%= product.name %>" />
           <div class="product-aside-details">
-            <h3>Product one</h3>
-            <span>30.00$</span>
-            <div class="count">
-              <button class="decrease">-</button>
-              <p class="num">1</p>
-              <button class="increase">+</button>
-            </div>
+            <h3><%= product.name %></h3>
+            <span><%= product.price %>$</span>
           </div>
         </div>
-        <div class="product-aside">
-          <button class="delete">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-          <img src="/products/m1.jpg" />
-          <div class="product-aside-details">
-            <h3>Product one</h3>
-            <span>30.00$</span>
-            <div class="count">
-              <button class="decrease">-</button>
-              <p class="num">1</p>
-              <button class="increase">+</button>
-            </div>
-          </div>
-        </div>
-        <div class="product-aside">
-          <button class="delete">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-          <img src="/products/m1.jpg" />
-          <div class="product-aside-details">
-            <h3>Product one</h3>
-            <span>30.00$</span>
-            <div class="count">
-              <button class="decrease">-</button>
-              <p class="num">1</p>
-              <button class="increase">+</button>
-            </div>
-          </div>
-        </div>
-        <div class="product-aside">
-          <button class="delete">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-          <img src="/products/m1.jpg" />
-          <div class="product-aside-details">
-            <h3>Product one</h3>
-            <span>30.00$</span>
-            <div class="count">
-              <button class="decrease">-</button>
-              <p class="num">1</p>
-              <button class="increase">+</button>
-            </div>
-          </div>
-        </div>
-        <div class="product-aside">
-          <button class="delete">
-            <i class="fa-solid fa-xmark"></i>
-          </button>
-          <img src="/products/m1.jpg" />
-          <div class="product-aside-details">
-            <h3>Product one</h3>
-            <span>30.00$</span>
-            <div class="count">
-              <button class="decrease">-</button>
-              <p class="num">1</p>
-              <button class="increase">+</button>
-            </div>
-          </div>
-        </div>
+        <% }) %> <% } else { %>
+        <p>Your cart is empty.</p>
+        <% } %>
       </div>
-      <h2 class="total">Total Amount : <span>150.00$</span></h2>
+
+      <% if (cart && cart.products.length > 0) { %>
+      <h2 class="total">
+        Total Amount: <span id="total-price"><%= cart.total %></span>$
+      </h2>
       <div class="checkout">
-        <a href="/checkout"><button>Proceed to checkout</button></a>
+        <a href="/payments/checkout"><button>Proceed to checkout</button></a>
       </div>
+      <% } %>
     </aside>
 
     <!-- Overlay -->
@@ -257,10 +210,13 @@
             <% } %>
           </div>
           <div class="add-container">
-            <button class="add-wishlist">
+            <button
+              class="add-wishlist"
+              onclick="addToWishlist('<%= product._id %>')"
+            >
               <i class="fa-solid fa-heart"></i><span>Add to wishlist</span>
             </button>
-            <button class="add-cart">
+            <button class="add-cart" onclick="addToCart('<%= product._id %>')">
               <i class="fa-solid fa-cart-shopping"></i> <span>Add to cart</span>
             </button>
           </div>
@@ -302,10 +258,13 @@
             <% } %>
           </div>
           <div class="add-container">
-            <button class="add-wishlist">
+            <button
+              class="add-wishlist"
+              onclick="addToWishlist('<%= product._id %>')"
+            >
               <i class="fa-solid fa-heart"></i><span>Add to wishlist</span>
             </button>
-            <button class="add-cart">
+            <button class="add-cart" onclick="addToCart('<%= product._id %>')">
               <i class="fa-solid fa-cart-shopping"></i> <span>Add to cart</span>
             </button>
           </div>
@@ -324,7 +283,72 @@
     </div>
     <!-- new collection -->
 
-    <script src="js/script.js"></script>
-    <script src="js/formvalidation.js"></script>
+
+    <script>
+      let totalPrice = parseInt("<%= cart && cart.total !== undefined ? cart.total : 0 %>");
+      function addToWishlist(productId) {
+        if(!'<%= user && user.token %>'){
+          showPopup();
+          return;
+        }
+        fetch(`/users/wishlist/${productId}`, { method: "POST" })
+          .then((response) => response.json())
+          .then((data) => {
+            alert("product added to wishlist")
+            window.location.reload();
+          })
+          .catch((err) => console.error("Error removing product:", err));
+      }
+
+      function removeFromWishlist(productId){
+        const productElement = document.getElementById(productId);
+        if (productElement) {
+          productElement.remove();
+        }
+
+        fetch(`/users/wishlist/${productId}`, { method: "POST" })
+          .then((response) => response.json())
+          .then((data) => console.log("Product removed:", data))
+          .catch((err) => console.error("Error removing product:", err));
+      }
+
+      function addToCart(productId) {
+        if(!'<%= user && user.token %>'){
+          showPopup();
+          return;
+        }
+        fetch(`/users/cart/${productId}`, { method: "POST" })
+          .then((response) => response.json())
+          .then((data) => {
+            alert("product added to cart")
+            window.location.reload();
+          })
+          .catch((err) => console.error("Error removing product:", err));
+      }
+
+
+      function removeFromCart(productId, productPrice) {
+        const productElement = document.getElementById(productId);
+        if (productElement) {
+          productElement.remove();
+          console.log(productPrice);
+          updateTotal(-productPrice);
+        }
+
+        fetch(`/users/cart/${productId}`, { method: "POST" })
+          .then((response) => response.json())
+          .then((data) => console.log("Product removed:", data))
+          .catch((err) => console.error("Error removing product:", err));
+      }
+
+      function updateTotal(amount) {
+        console.log(totalPrice)
+        totalPrice += parseInt(amount);
+        console.log(totalPrice)
+        console.log(parseInt(totalPrice))
+        document.getElementById("total-price").textContent =
+          parseInt(totalPrice);
+      }
+    </script>
   </body>
 </html>

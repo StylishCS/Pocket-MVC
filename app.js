@@ -1,5 +1,4 @@
 require("dotenv").config();
-var createError = require("http-errors");
 var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
@@ -7,7 +6,7 @@ var logger = require("morgan");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const expressLayouts = require("express-ejs-layouts");
-const { checkUser } = require("./middleware/auth.middleware");
+const { checkUser } = require("./middlewares/auth.middleware");
 
 mongoose
   .connect(process.env.MONGO_URI)
@@ -19,6 +18,7 @@ mongoose
 
 var indexRouter = require("./routes/index");
 var usersRouter = require("./routes/users");
+var paymentsRouter = require("./routes/payments");
 
 var app = express();
 app.use(cors());
@@ -39,10 +39,8 @@ app.use(express.static("public"));
 app.use(checkUser);
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
+app.use("/payments", paymentsRouter);
 
-app.get("/checkout", (req, res) => {
-  res.render("checkout");
-});
 // Middleware to handle errors
 app.use((req, res, next) => {
   const error = new Error("Not Found");

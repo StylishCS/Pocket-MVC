@@ -13,8 +13,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/style.css" />
-    <link rel="stylesheet" href="css/signIn.css" />
+    <link rel="stylesheet" href="../css/style.css" />
+    <link rel="stylesheet" href="../css/signIn.css" />
 
     <title>checkout</title>
   </head>
@@ -23,20 +23,24 @@
       <h2 class="title">Checkout</h2>
       <div class="checkout-conatainer">
         <div class="form-conatiner">
-          <form action="">
+          <form>
             <div class="input-container">
               <label>Name</label>
-              <input type="text" required />
+              <input type="text" disabled value="<%= user.name %>" />
             </div>
             <div class="input-container">
               <label>Email</label>
-              <input type="email" required />
+              <input type="email" disabled value="<%= user.email %>" />
             </div>
             <div class="input-container">
               <label>Phone</label>
-              <input type="email" required />
+              <input type="tel" required />
             </div>
-            <button type="submit">Pay</button>
+            <div class="input-container">
+              <label>Address</label>
+              <input id="addressInput" type="text" required />
+            </div>
+            <button type="button" onclick="checkoutCart(event)">Pay</button>
           </form>
         </div>
         <div class="summry">
@@ -44,35 +48,45 @@
             <h3>Review your cart</h3>
           </div>
           <div class="summry-component">
+            <% cart.forEach(product => {%>
             <div class="product-aside">
-              <img src="/products/m1.jpg" />
+              <img src="<%= product.image %>" alt="<%= product.name %>" />
               <div class="product-aside-details">
-                <h3>Product one</h3>
-                <span>30.00$</span>
+                <h3><%= product.name %></h3>
+                <span><%= product.price %>$</span>
               </div>
             </div>
-            <div class="product-aside">
-              <img src="/products/m1.jpg" />
-              <div class="product-aside-details">
-                <h3>Product one</h3>
-                <span>30.00$</span>
-              </div>
-            </div>
-            <div class="product-aside">
-              <img src="/products/m1.jpg" />
-              <div class="product-aside-details">
-                <h3>Product one</h3>
-                <span>30.00$</span>
-              </div>
-            </div>
+            <%})%>
           </div>
           <div class="total-div">
-            <h2>Total Amount: <span>150.00$</span></h2>
+            <h2>Total Amount: <span><%= total %>$</span></h2>
           </div>
         </div>
       </div>
     </div>
-    <script src="js/script.js"></script>
-    <script src="js/formvalidation.js"></script>
+    <script>
+      async function checkoutCart(event) {
+        event.preventDefault();
+        console.log("flag");
+        const phone = document.querySelector('input[type="tel"]').value;
+        const address = document.getElementById("addressInput").value;
+        const response = await fetch("/payments/checkout", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `<%= user.token %>`,
+          },
+          body: JSON.stringify({ shippingAddress: address }),
+        });
+        const data = await response.json();
+        console.log(data);
+        if (data.success) {
+          console.log(data);
+          window.location.href = data.shorten_url;
+        } else {
+          alert("Order failed");
+        }
+      }
+    </script>
   </body>
 </html>
